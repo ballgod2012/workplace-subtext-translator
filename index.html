@@ -7,510 +7,578 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#f5f5f5;--card:#fff;--accent:#e8413c;--accent2:#ff7b54;--accent3:#2ec4b6;--text:#1a1a2e;--muted:#8c8c9a;--border:#eee;--radius:16px;--shadow:0 2px 12px rgba(0,0,0,0.06)}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,'PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden}
-
-/* Status bar mock */
-.status-bar{background:linear-gradient(135deg,#e8413c,#ff7b54);padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,0.9);height:36px}
-.status-bar .time{font-weight:600}
-.status-bar .icons{display:flex;gap:4px;font-size:11px}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;position:relative}
 
 /* Header */
-.header{background:linear-gradient(135deg,#e8413c,#ff7b54);padding:16px 20px 28px;text-align:center;position:relative}
-.header h1{color:#fff;font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:4px}
-.header p{color:rgba(255,255,255,0.85);font-size:12px}
-.header::after{content:'';position:absolute;bottom:-20px;left:0;right:0;height:40px;background:var(--bg);border-radius:20px 20px 0 0}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:52px 20px 20px;text-align:center;position:sticky;top:0;z-index:100}
+.header-title{font-size:20px;font-weight:800;margin-bottom:4px;letter-spacing:1px}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px}
+.header-status{display:flex;justify-content:center;gap:16px;font-size:11px;color:rgba(255,255,255,0.5)}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#2ec4b6;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-/* Capsule tabs */
-.tabs{display:flex;gap:6px;padding:0 16px;margin-top:-12px;position:relative;z-index:2}
-.tab{flex:1;padding:10px 0;text-align:center;font-size:13px;font-weight:600;border-radius:12px;background:var(--card);color:var(--muted);cursor:pointer;box-shadow:var(--shadow);transition:all .2s}
-.tab.active{background:linear-gradient(135deg,#e8413c,#ff7b54);color:#fff;box-shadow:0 4px 15px rgba(232,65,60,0.3)}
+/* Tabs */
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:88px;z-index:99}
+.tab{flex:1;padding:14px 0;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;position:relative;transition:color 0.2s;-webkit-user-select:none;user-select:none}
+.tab.active{color:var(--accent);font-weight:700}
+.tab.active::after{content:'';position:absolute;bottom:0;left:30%;right:30%;height:3px;background:var(--accent);border-radius:3px}
 
 /* Sections */
 .section{display:none;padding:16px}
 .section.active{display:block}
 
-/* Card */
-.card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:12px}
-.card-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-
-/* Industry selector */
-.industry-row{display:flex;gap:8px;margin-bottom:14px}
-.industry-btn{flex:1;padding:10px;border-radius:12px;border:2px solid var(--border);background:var(--card);text-align:center;cursor:pointer;transition:all .2s}
-.industry-btn .icon{font-size:20px;display:block;margin-bottom:2px}
-.industry-btn .label{font-size:11px;color:var(--muted);font-weight:600}
-.industry-btn.active{border-color:var(--accent);background:rgba(232,65,60,0.05)}
+/* Industry Selector */
+.industry-row{display:flex;gap:10px;margin-bottom:16px}
+.industry-btn{flex:1;background:var(--card);border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none}
+.industry-btn.active{border-color:var(--accent);background:rgba(232,65,60,0.04)}
+.industry-btn .icon{font-size:22px;display:block;margin-bottom:4px}
+.industry-btn .label{font-size:12px;color:var(--muted);font-weight:600}
 .industry-btn.active .label{color:var(--accent)}
 
-/* Company chips */
-.company-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.chip{padding:6px 12px;border-radius:20px;background:#f0f0f0;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;font-weight:500}
-.chip.active{background:var(--accent);color:#fff}
+/* Company Chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{padding:6px 14px;background:#fff;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.2s;-webkit-user-select:none;user-select:none}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-/* Input area */
-.input-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
-.input-field{border:none;outline:none;width:100%;padding:16px 20px;font-size:15px;background:transparent;color:var(--text);resize:none;min-height:80px;font-family:inherit;line-height:1.6}
-.input-field::placeholder{color:#bbb}
-.input-bottom{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-top:1px solid #f5f5f5}
+/* Input Area */
+.input-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.input-field{width:100%;border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:15px;outline:none;resize:none;min-height:60px;font-family:inherit;line-height:1.6;transition:border-color 0.2s}
+.input-field:focus{border-color:var(--accent)}
+.input-field::placeholder{color:#ccc}
+.input-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .char-count{font-size:11px;color:var(--muted)}
-.translate-btn{background:linear-gradient(135deg,#e8413c,#ff7b54);color:#fff;border:none;padding:10px 28px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s;box-shadow:0 4px 12px rgba(232,65,60,0.3)}
-.translate-btn:active{transform:scale(0.96)}
+.translate-btn{background:var(--accent);color:#fff;border:none;padding:10px 28px;border-radius:24px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s;-webkit-user-select:none;user-select:none}
+.translate-btn:active{opacity:0.8}
 
-/* Quick phrases */
-.quick-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.quick-tag{padding:6px 12px;border-radius:20px;background:var(--card);border:1px solid var(--border);font-size:12px;color:var(--text);cursor:pointer;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.quick-tag:active{background:rgba(232,65,60,0.05);border-color:var(--accent)}
+/* Quick Tags */
+.card-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px}
+.quick-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.quick-tag{padding:6px 12px;background:#fff;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text);cursor:pointer;transition:all 0.15s;-webkit-user-select:none;user-select:none}
+.quick-tag:active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-/* Result card */
-.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;animation:slideUp .3s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.result-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f5f5f5}
-.result-header .title{font-size:15px;font-weight:700}
-.risk-badge{padding:4px 10px;border-radius:10px;font-size:11px;font-weight:700}
-.risk-1{background:#e8f8f5;color:#1b9e8a} /* 温和 */
-.risk-2{background:#fff8e1;color:#f5a623} /* 客套 */
-.risk-3{background:#fff3e0;color:#ff8a00} /* 施压 */
-.risk-4{background:#fce4ec;color:#e8413c} /* 拒绝 */
-.risk-5{background:#f3e5f5;color:#9c27b0} /* 甩锅 */
-.risk-6{background:#ffebee;color:#c62828} /* 劝退 */
-.result-body{padding:16px 20px}
-.result-row{margin-bottom:14px}
+/* Result Area */
+#resultArea{margin-bottom:16px}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.result-header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border)}
+.result-header .title{font-size:16px;font-weight:800}
+.risk-badge{padding:4px 12px;border-radius:12px;font-size:11px;font-weight:700}
+.risk-1{background:#e8f8f5;color:#0e6655}
+.risk-2{background:#fef9e7;color:#9a7d0a}
+.risk-3{background:#fdebd0;color:#a04000}
+.risk-4{background:#fadbd8;color:#922b21}
+.risk-5{background:#e8daef;color:#6c3483}
+.risk-6{background:#1a1a2e;color:#fff}
+.result-body{padding:16px}
+.result-row{margin-bottom:16px}
 .result-row:last-child{margin-bottom:0}
-.result-label{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:4px}
-.result-value{font-size:14px;line-height:1.7;color:var(--text)}
-.result-value .highlight{color:var(--accent);font-weight:600}
-.psych-tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin-right:4px;margin-bottom:4px}
-.psych-imp{background:#e3f2fd;color:#1565c0}
-.psych-def{background:#fce4ec;color:#c62828}
-.psych-mgmt{background:#f3e5f5;color:#7b1fa2}
-.psych-face{background:#e8f5e9;color:#2e7d32}
-.psych-power{background:#fff3e0;color:#e65100}
-.psych-nc{background:#e0f7fa;color:#00838f}
-.advice-box{background:#f8f9fa;border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent3);margin-top:10px}
-.advice-box .title{font-size:11px;color:var(--accent3);font-weight:700;margin-bottom:4px}
-.advice-box .text{font-size:13px;line-height:1.7;color:#555}
+.result-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.result-value{font-size:14px;line-height:1.8;color:#333}
+.highlight{color:var(--accent);font-weight:600}
 
-/* Empty state */
-.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
-.empty-icon{font-size:48px;margin-bottom:12px;opacity:0.4}
-.empty-text{font-size:13px;line-height:1.6}
+/* Psych Tags */
+.psych-tag{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:600;margin-bottom:4px;margin-right:4px}
+.psych-def{background:#fdebd0;color:#a04000}
+.psych-imp{background:#d4efdf;color:#1e8449}
+.psych-mgmt{background:#d6eaf8;color:#2471a3}
+.psych-face{background:#f5eef8;color:#7d3c98}
+.psych-power{background:#fadbd8;color:#922b21}
+.psych-nc{background:#e8f8f5;color:#0e6655}
 
-/* Library section */
-.lib-item{background:var(--card);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:10px;cursor:pointer;transition:transform .1s}
+/* Advice */
+.advice-box{background:#fef9e7;border-radius:12px;padding:14px;margin-top:4px}
+.advice-box .title{font-size:13px;font-weight:700;color:#9a7d0a;margin-bottom:6px}
+.advice-box .text{font-size:13px;line-height:1.8;color:#666}
+
+/* Share Bar */
+#shareBar{display:none;text-align:center;margin-bottom:16px}
+.share-btn{background:var(--accent2);color:#fff;border:none;padding:10px 24px;border-radius:24px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;-webkit-user-select:none;user-select:none}
+.share-btn:active{opacity:0.8}
+
+/* Library */
+.lib-item{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;box-shadow:var(--shadow);-webkit-user-select:none;user-select:none}
 .lib-item:active{transform:scale(0.98)}
-.lib-phrase{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.5}
-.lib-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.lib-company{font-size:11px;padding:2px 8px;border-radius:8px;background:#f0f0f0;color:var(--muted)}
-.lib-sub{font-size:11px;color:var(--muted);font-style:italic}
+.lib-phrase{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.lib-meta{display:flex;gap:8px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.lib-company{background:rgba(232,65,60,0.08);color:var(--accent);padding:2px 8px;border-radius:8px}
+.lib-sub{color:#999}
 
 /* History */
-.history-item{background:var(--card);border-radius:var(--radius);padding:14px 20px;box-shadow:var(--shadow);margin-bottom:8px}
-.history-phrase{font-size:13px;font-weight:600;margin-bottom:2px}
+.history-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:2}
+.history-item{background:var(--card);border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:var(--shadow)}
+.history-phrase{font-size:14px;font-weight:600;margin-bottom:4px}
 .history-sub{font-size:12px;color:var(--muted)}
-.history-empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
-
-/* Psychology insight banner */
-.psych-banner{background:linear-gradient(135deg,#2ec4b6,#3dd6d0);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;color:#fff}
-.psych-banner .label{font-size:11px;opacity:0.8;font-weight:600;margin-bottom:4px}
-.psych-banner .text{font-size:13px;line-height:1.6;font-weight:500}
-
-/* Share button */
-.share-bar{padding:12px 16px;text-align:center}
-.share-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:10px 24px;font-size:13px;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
-
-/* Footer */
-.footer{text-align:center;padding:20px;font-size:11px;color:var(--muted)}
-.footer span{color:var(--accent)}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:0;background:transparent}
 
 /* Toast */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;white-space:nowrap}
-.toast.show{opacity:1}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,0,0,0.8);color:#fff;padding:10px 24px;border-radius:24px;font-size:13px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Footer */
+.footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);line-height:1.8}
+.footer span{color:var(--accent);font-weight:700}
 </style>
 </head>
 <body>
 
-<div class="status-bar">
-  <span class="time" id="statusTime">21:29</span>
-  <span class="icons">📶 📡 🔋</span>
-</div>
-
+<!-- Header -->
 <div class="header">
-  <h1>🎭 大厂潜台词翻译器</h1>
-  <p>心理学驱动的职场话术深度解码</p>
-</div>
-
-<div class="tabs">
-  <div class="tab active" onclick="switchTab(0,this)">🔍 翻译</div>
-  <div class="tab" onclick="switchTab(1,this)">📚 案例</div>
-  <div class="tab" onclick="switchTab(2,this)">🕐 历史</div>
-</div>
-
-<!-- ===== TAB 0: TRANSLATE ===== -->
-<div id="sec0" class="section active">
-  <!-- Industry -->
-  <div class="industry-row">
-    <div class="industry-btn active" onclick="selectIndustry(0,this)"><span class="icon">🌐</span><span class="label">互联网</span></div>
-    <div class="industry-btn" onclick="selectIndustry(1,this)"><span class="icon">🛡️</span><span class="label">保险</span></div>
-    <div class="industry-btn" onclick="selectIndustry(2,this)"><span class="icon">🏭</span><span class="label">实业</span></div>
+  <div class="header-title">[ ] 大厂潜台词翻译器</div>
+  <div class="header-sub">职场表面话术 &gt; 真实内心潜台词</div>
+  <div class="header-status">
+    <span><span class="status-dot"></span>已上线</span>
+    <span id="statusTime">--:--</span>
+    <span>覆盖15+头部大厂</span>
   </div>
-  <!-- Companies -->
-  <div class="company-chips" id="companyChips"></div>
-  <!-- Quick phrases -->
-  <div class="card-label">💬 热门话术，点击快速体验</div>
-  <div class="quick-row" id="quickPhrases"></div>
-  <!-- Input -->
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-idx="0">[ ] 翻译</div>
+  <div class="tab" data-idx="1">[ ] 案例</div>
+  <div class="tab" data-idx="2">[ ] 历史</div>
+</div>
+
+<!-- TAB 0: Translator -->
+<div id="sec0" class="section active">
+  <div class="industry-row">
+    <div class="industry-btn active" data-ind="0"><span class="icon">WEB</span><span class="label">互联网</span></div>
+    <div class="industry-btn" data-ind="1"><span class="icon">INS</span><span class="label">保险</span></div>
+    <div class="industry-btn" data-ind="2"><span class="icon">MFG</span><span class="label">实业</span></div>
+  </div>
+  <div class="chips" id="companyChips"></div>
   <div class="input-card">
-    <textarea class="input-field" id="inputField" placeholder="输入你想翻译的大厂话术..." maxlength="200" oninput="updateCount()"></textarea>
-    <div class="input-bottom">
-      <span class="char-count"><span id="charCount">0</span>/200</span>
-      <button class="translate-btn" onclick="translate()">🔍 翻译潜台词</button>
+    <textarea class="input-field" id="inputField" placeholder="输入职场话术，如：你们领导同意了吗？" oninput="updateCount()"></textarea>
+    <div class="input-footer">
+      <span class="char-count"><span id="charCount">0</span>字</span>
+      <button class="translate-btn" id="translateBtn">[ ] 翻译潜台词</button>
     </div>
   </div>
-  <!-- Result -->
+  <div class="card-label">[ ] 热门话术（点击直接翻译）</div>
+  <div class="quick-tags" id="quickPhrases"></div>
   <div id="resultArea"></div>
-  <!-- Share -->
-  <div class="share-bar" id="shareBar" style="display:none">
-    <button class="share-btn" onclick="shareResult()">📤 分享给同事</button>
-  </div>
+  <div id="shareBar"><button class="share-btn" id="shareBtn">[ ] 分享给同事</button></div>
 </div>
 
-<!-- ===== TAB 1: LIBRARY ===== -->
+<!-- TAB 1: Library -->
 <div id="sec1" class="section">
-  <div class="psych-banner">
-    <div class="label">🧠 心理学洞察</div>
-    <div class="text">职场话术背后，往往隐藏着社会心理学、印象管理、权力博弈等深层心理机制。每条翻译都附带心理学视角的专业解读。</div>
-  </div>
-  <div class="card-label" style="margin-bottom:10px">📂 全部案例（点击直接翻译）</div>
+  <div class="card-label">[ ] 全部案例（点击直接翻译）</div>
   <div id="libraryList"></div>
 </div>
 
-<!-- ===== TAB 2: HISTORY ===== -->
+<!-- TAB 2: History -->
 <div id="sec2" class="section">
   <div id="historyList"></div>
 </div>
 
-<div class="footer">基于社会心理学 · 职场心理学 · 潜意识语言分析<br>覆盖<span>15+</span>头部大厂真实沟通语境</div>
+<div class="footer">基于社会心理学 / 职场心理学 / 潜意识语言分析<br>覆盖<span>15+</span>头部大厂真实沟通语境</div>
 <div class="toast" id="toast"></div>
 
 <script>
 // ===== DATA =====
-const companies = [
-  // 0: 互联网
+var companies = [
   ['字节跳动','阿里','腾讯','百度','美团','京东','拼多多'],
-  // 1: 保险
   ['中国平安','中国人寿','太平洋保险','泰康'],
-  // 2: 实业
   ['华为','比亚迪','格力','宁德时代']
 ];
 
-let currentIndustry = 0;
-let currentCompany = '字节跳动';
-let history = [];
+var currentIndustry = 0;
+var currentCompany = '字节跳动';
+var historyList = [];
 
-// ===== 翻译知识库（心理学驱动） =====
-const db = [
-// ---- 互联网 ----
+// ===== RISK CONFIG =====
+var riskLevels = [null,
+  {text:'温和提醒', cls:'risk-1', icon:'( )'},
+  {text:'常规客套', cls:'risk-2', icon:'( )'},
+  {text:'隐性施压', cls:'risk-3', icon:'(!)'},
+  {text:'变相拒绝', cls:'risk-4', icon:'(X)'},
+  {text:'甩锅预警', cls:'risk-5', icon:'(!)'},
+  {text:'劝退信号', cls:'risk-6', icon:'(!!)'}
+];
+
+var psychTypes = {
+  def: {label:'防御机制', cls:'psych-def'},
+  imp: {label:'社会心理', cls:'psych-imp'},
+  mgmt: {label:'管理心理', cls:'psych-mgmt'},
+  face: {label:'印象管理', cls:'psych-face'},
+  power: {label:'权力心理', cls:'psych-power'},
+  nc: {label:'非暴力沟通', cls:'psych-nc'}
+};
+
+// ===== TRANSLATION DATABASE =====
+var db = [
+// === 互联网 ===
 {phrase:'你们领导同意了吗？',industry:0,companies:['字节跳动','阿里','腾讯','百度','美团','京东'],
  surface:'询问流程是否走完，确认对方是否有权限推进这件事。',
  sub:'我不想做这件事，所以找一个"程序性前置条件"来合理地挡回去。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'责任转移',type:'def',desc:'用"程序问题"把决策责任推给对方领导，自己不承担拒绝的社交压力'},{name:'心理所有权',type:'mgmt',desc:'暗示"这件事不在我的授权范围内"，划定边界'},{name:'面子保全',type:'face',desc:'避免直接说"不"造成的面子损伤，用流程话术保全双方体面'}],
+ psychology:[
+   {name:'责任转移',type:'def',desc:'用"程序问题"把决策责任推给对方领导，自己不承担拒绝的社交压力'},
+   {name:'心理所有权',type:'mgmt',desc:'暗示"这件事不在我的授权范围内"，划定边界'},
+   {name:'面子保全',type:'face',desc:'避免直接说"不"造成的面子损伤，用流程话术保全双方体面'}
+ ],
  advice:'识别后追问：如果对方领导同意，这件事可以推进吗？如果对方继续找新的条件，则确认是软拒绝，不必再耗。'},
 
 {phrase:'原则上没问题',industry:0,companies:['字节跳动','阿里','腾讯','百度'],
  surface:'大方向上没有异议，可以推进。',
  sub:'现在有问题，但我不想当面说。给你一点希望的同时埋下退路，后续会以"资源/排期/其他部门"为由拖延或取消。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'模糊承诺',type:'nc',desc:'使用模糊限定词保留回旋余地，既不得罪人也不做实质承诺（非暴力沟通中的回避策略）'},{name:'印象管理',type:'imp',desc:'维护"好说话"的人设，实际上并没有真正的合作意愿'},{name:'心理缓冲期',type:'def',desc:'给自己争取时间，后续可以用更正当的理由反悔'}],
- advice:'当场追问具体条件："原则上的'原则上'指的是什么前提？"迫使对方从模糊承诺变成明确答复。'},
+ psychology:[
+   {name:'模糊承诺',type:'nc',desc:'使用模糊限定词保留回旋余地，既不得罪人也不做实质承诺'},
+   {name:'印象管理',type:'face',desc:'维护"好说话"的人设，实际上并没有真正的合作意愿'},
+   {name:'心理缓冲期',type:'def',desc:'给自己争取时间，后续可以用更正当的理由反悔'}
+ ],
+ advice:'当场追问具体条件："原则上的\'原则上\'指的是什么前提？"迫使对方从模糊承诺变成明确答复。'},
 
 {phrase:'你再优化一下',industry:0,companies:['字节跳动','阿里','腾讯','美团','百度'],
  surface:'当前版本还需要改进，希望做得更好。',
  sub:'不满意，但不想说哪里不满意。可能根本没有仔细看，也可能有自己没想清楚的想法。对中基层说=需要大改；对基层说=方向不对重新来。',
  risk:3,riskText:'隐性施压',
- psychology:[{name:'评价回避',type:'def',desc:'管理者不愿给出具体反馈（可能因为自己也没想清楚），用模糊指令推回执行者，转移定义问题的责任'},{name:'权力展示',type:'power',desc:'通过"我有权要求更多"来建立层级感，暗示"最终解释权在我"'},{name:'防御性反馈',type:'def',desc:'避免直接否定造成的冲突，用温和但模糊的措辞保护双方面子'}],
+ psychology:[
+   {name:'评价回避',type:'def',desc:'管理者不愿给出具体反馈，用模糊指令推回执行者，转移定义问题的责任'},
+   {name:'权力展示',type:'power',desc:'通过"我有权要求更多"来建立层级感，暗示"最终解释权在我"'},
+   {name:'防御性反馈',type:'def',desc:'避免直接否定造成的冲突，用温和但模糊的措辞保护双方面子'}
+ ],
  advice:'不要猜。直接问："具体是哪几个维度需要优化？我列一个清单您过一下，避免方向跑偏。"把定义问题的责任推回去。'},
 
 {phrase:'我来看看排期',industry:0,companies:['字节跳动','阿里','腾讯','百度','美团'],
  surface:'我需要确认团队的工作安排，看看什么时候能做。',
  sub:'这件事优先级不高，我大概率排不进去。但先不直接拒绝，让时间帮你慢慢淡忘这件事。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'拖延策略',type:'nc',desc:'用"需要时间评估"制造希望，实际上利用了人的"乐观偏差"——对方会主动降低追问频率'},{name:'被动攻击',type:'def',desc:'不正面拒绝但也不采取行动，属于非暴力沟通中的"沉默"形式，隐性施压让对方放弃'},{name:'权力暗示',type:'power',desc:'暗示"我有权决定排期"=我能控制这件事的生死'}],
+ psychology:[
+   {name:'拖延策略',type:'nc',desc:'用"需要时间评估"制造希望，实际上利用了人的"乐观偏差"——对方会主动降低追问频率'},
+   {name:'被动攻击',type:'def',desc:'不正面拒绝但也不采取行动，属于非暴力沟通中的"沉默"形式，隐性施压让对方放弃'},
+   {name:'权力暗示',type:'power',desc:'暗示"我有权决定排期"=我能控制这件事的生死'}
+ ],
  advice:'主动跟进时间线："大概什么时候能给到我排期结果？我这边也好同步其他依赖方。"限定对方拖延空间。'},
 
 {phrase:'我们内部对齐一下',industry:0,companies:['字节跳动','阿里','腾讯','美团'],
  surface:'我需要跟团队成员确认一下意见。',
  sub:'我个人倾向拒绝或反对，但我不想一个人当坏人，拉其他人一起背书。"内部对齐"=找同盟一起否定你。',
  risk:5,riskText:'甩锅预警',
- psychology:[{name:'群体责任分散',type:'imp',desc:'社会心理学经典理论：群体决策可以让个人免于单独承担责任，拉人壮胆降低心理成本'},{name:'从众压力',type:'imp',desc:'一旦形成群体意见，你很难再逐一说服，因为人天然倾向于认同多数派'},{name:'心理防御联盟',type:'def',desc:'组建临时联盟共同抵御外部压力，本质上是安全感需求'}],
+ psychology:[
+   {name:'群体责任分散',type:'imp',desc:'社会心理学经典理论：群体决策可以让个人免于单独承担责任，拉人壮胆降低心理成本'},
+   {name:'从众压力',type:'imp',desc:'一旦形成群体意见，你很难再逐一说服，因为人天然倾向于认同多数派'},
+   {name:'心理防御联盟',type:'def',desc:'组建临时联盟共同抵御外部压力，本质上是安全感需求'}
+ ],
  advice:'主动提议："要不我一起参加你们的内部对齐会？"如果对方拒绝，大概率是软拒绝。如果同意，你至少能知道真正的卡点在哪。'},
 
 {phrase:'这个想法挺有创意的',industry:0,companies:['字节跳动','阿里','腾讯','美团','百度'],
  surface:'你的想法不错，值得肯定。',
  sub:'想法是不错，但执行价值存疑/我不打算支持。用肯定开头降低拒绝的心理冲击。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'三明治反馈',type:'nc',desc:'经典沟通技巧：先肯定→再否定→再鼓励。开头夸是为了后面的"但是"做铺垫'},{name:'情感缓冲',type:'face',desc:'人类大脑对负面信息的敏感度是正面的2倍，先给正面情绪可以降低对方对后续否定的抵触'},{name:'光环效应反转',type:'imp',desc:'先给对方贴"有创意"的标签，即使拒绝也不会让对方觉得自己能力不行'}],
- advice:'听完等下一句。如果接"但是/不过/不过呢"=要否定；如果接"你可以详细说说"=真有兴趣。核心是等"转折词"。'},
+ psychology:[
+   {name:'三明治反馈',type:'nc',desc:'经典沟通技巧：先肯定-再否定-再鼓励。开头夸是为了后面的"但是"做铺垫'},
+   {name:'情感缓冲',type:'face',desc:'人类大脑对负面信息的敏感度是正面的2倍，先给正面情绪可以降低对方对后续否定的抵触'},
+   {name:'光环效应反转',type:'imp',desc:'先给对方贴"有创意"的标签，即使拒绝也不会让对方觉得自己能力不行'}
+ ],
+ advice:'听完等下一句。如果接"但是/不过"=要否定；如果接"你可以详细说说"=真有兴趣。核心是等"转折词"。'},
 
 {phrase:'公司最近在做组织优化',industry:0,companies:['字节跳动','阿里','腾讯','美团','京东','拼多多'],
  surface:'公司正在调整组织架构，优化效率。',
  sub:'要裁员了/要降本增效了/你的岗位可能在调整范围内。这是HR和管理层最常用的"裁员前语言信号"。',
  risk:6,riskText:'劝退信号',
- psychology:[{name:'委婉语言策略',type:'face',desc:'用中性/正面词汇替代负面含义（如"毕业"代"裁员"），降低信息接收者的心理冲击和焦虑感'},{name:'预期管理',type:'mgmt',desc:'提前释放模糊信号让员工心理上有所准备，降低突发裁员带来的组织震荡和负面情绪'},{name:'自我保护',type:'def',desc:'管理层避免直接说出"裁员"可能引发的法律风险和公关危机，用模糊表达保护自己'}],
+ psychology:[
+   {name:'委婉语言策略',type:'face',desc:'用中性/正面词汇替代负面含义（如"毕业"代"裁员"），降低信息接收者的心理冲击和焦虑感'},
+   {name:'预期管理',type:'mgmt',desc:'提前释放模糊信号让员工心理上有所准备，降低突发裁员带来的组织震荡'},
+   {name:'自我保护',type:'def',desc:'管理层避免直接说出"裁员"可能引发的法律风险和公关危机，用模糊表达保护自己'}
+ ],
  advice:'立刻更新简历，盘点竞品机会，联系猎头。同时观察：直属领导最近对你的态度是否突然变冷淡/工作是否被逐渐架空。这两个信号叠加，基本确认。'},
 
 {phrase:'你的能力是有提升空间的',industry:0,companies:['字节跳动','阿里','腾讯','美团','百度'],
  surface:'肯定你的能力，同时指出还有成长方向。',
  sub:'你的能力目前达不到我的要求。这句话在绩效面谈中出现=你可能面临绩效改进计划（PIP）；在晋升评审中出现=你这次过不了。',
  risk:5,riskText:'甩锅预警',
- psychology:[{name:'建设性批评包装',type:'face',desc:'用"有空间"代替"不够"，遵循"批评+期望"格式，降低被批评者的防御心理'},{name:'期望管理',type:'mgmt',desc:'设定一个模糊的高标准，后续任何结果都可以解释为"没达到期望"'},{name:'地位确认',type:'power',desc:'通过评价权建立上位者地位：我有资格评判你，而你没有反驳的权力'}],
+ psychology:[
+   {name:'建设性批评包装',type:'face',desc:'用"有空间"代替"不够"，遵循"批评+期望"格式，降低被批评者的防御心理'},
+   {name:'期望管理',type:'mgmt',desc:'设定一个模糊的高标准，后续任何结果都可以解释为"没达到期望"'},
+   {name:'地位确认',type:'power',desc:'通过评价权建立上位者地位：我有资格评判你，而你没有反驳的权力'}
+ ],
  advice:'立即追问具体差距："您说的提升空间具体指哪些方面？能不能给我一个明确的评估标准和时间框架？"逼对方从模糊变成可衡量。'},
 
-{phrase:'这个事情我们再研究研究',industry:0,companies:['阿里','腾讯','百度','字节跳动'],
- surface:'这件事需要更多时间来评估和决策。',
- sub:'我不打算做，但我需要一个体面的拒绝方式。用"再研究"来拖延，等到你不再追问，这件事就自然"死掉"了。',
+{phrase:'你先干着，后面不会亏待你的',industry:0,companies:['字节跳动','阿里','腾讯','美团','京东'],
+ surface:'先做起来，后续会有回报。',
+ sub:'经典画饼。用模糊的未来承诺换取当前的免费劳动力投入。"后面"永远不会来，或者来了也不是你想要的。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'决策拖延',type:'nc',desc:'不决策本身就是一种决策。利用"行动偏误"的逆向——人在等待中会自动降低期望'},{name:'面子保护',type:'face',desc:'给双方都留台阶：对方面子上"还在考虑"，你的面子上"没被直接拒绝"'},{name:'沉默成本利用',type:'mgmt',desc:'等你等得够久，你的投入成本增加，最终自己放弃的概率大幅提升'}],
- advice:'给对方一个明确的deadline："好的，那我们定个时间，下周五之前给一个方向性结论，可以吗？"如果对方继续拖延，就是确认拒绝。'},
+ psychology:[
+   {name:'延迟满足操控',type:'mgmt',desc:'利用延迟满足心理——人倾向于相信"未来的回报更大"，从而接受当前的不公平交换'},
+   {name:'模糊承诺',type:'nc',desc:'不给出具体的回报内容、时间节点和量化标准，使得承诺无法被追踪和兑现'},
+   {name:'投入陷阱',type:'imp',desc:'一旦你投入了大量时间和精力，沉没成本会让你很难退出，即使回报永远不会来'},
+   {name:'心理账户',type:'def',desc:'让你把"付出的劳动"和"未来的回报"放在同一个心理账户里，形成一种虚假的"投资感"'}
+ ],
+ advice:'当场确认具体回报："\'不会亏待\'具体指什么？是薪资调整、职级晋升还是其他？大概什么时候兑现？"把模糊承诺变成可追踪的承诺。'},
 
-{phrase:'我最近比较忙',industry:0,companies:['字节跳动','阿里','腾讯','美团','百度'],
- surface:'我手上有其他工作在处理。',
- sub:'这件事不是我的优先级。在职场中，忙是一个万能的正当理由，但"忙"的潜台词取决于说的对象——对平级说=不想做；对下属说=别来烦我；对上级说=我确实资源不够。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'身份信号',type:'power',desc:'"忙"=我的时间有价值，你的需求不够重要。这是社交中的地位暗示'},{name:'边界设置',type:'def',desc:'通过时间限制来维护个人边界，同时不直接否定对方（防御性沟通策略）'},{name:'社会交换理论',type:'imp',desc:'职场互动是价值交换：你的请求对我的价值回报不够，我用"忙"来拒绝这次不划算的交换'}],
- advice:'判断语境后再行动。如果对方确实很忙——等一等或换时间；如果明显在推——"那我整理一个简要版本，您花5分钟看一眼给个方向就行？"降低对方的决策成本。'},
-
-{phrase:'这个方向跟老板想的不太一样',industry:0,companies:['字节跳动','阿里','腾讯','美团'],
- surface:'你的想法和上级的战略方向有偏差。',
- sub:'我不认同你的方案，但我不想自己承担否定的责任，所以拉老板当挡箭牌。可能是真有老板意见，也可能是我编的。',
- risk:5,riskText:'甩锅预警',
- psychology:[{name:'权威借用',type:'power',desc:'利用权威人物（老板）来增强自己否定的正当性，降低个人承担的社交风险'},{name:'责任转移',type:'def',desc:'把否定的责任从"我不同意"变成"老板不同意"，维护自己的人设'},{name:'服从权威',type:'imp',desc:'暗示你应该服从更高层级，利用"权力距离"心理让你不好继续追问'}],
- advice:'如果你确定老板没有这个意思——直接找老板确认方向。如果你不确定——"能具体说一下老板是怎么想的吗？我也好对齐。"用具体的追问打破模糊的权威压人。'},
-
-{phrase:'辛苦了',industry:0,companies:['字节跳动','阿里','腾讯','美团','百度'],
- surface:'感谢你的付出和努力。',
- sub:'这句需要分语境。平级说=客套，别当真。领导单独说=你做的确实不错/暗示接下来还有更多活。领导在公开场合说=例行激励话术。注意："辛苦了"后面如果有"但是"=前面全是铺垫。',
- risk:2,riskText:'常规客套',
- psychology:[{name:'社交润滑剂',type:'face',desc:'标准的礼貌用语，降低职场互动中的摩擦感。频率越高，情感含量越低'},{name:'互惠暗示',type:'imp',desc:'潜台词"我看到了你的付出"，暗示 reciprocity——你欠我一个人情/我以后找你帮忙你有义务配合'},{name:'期望管理',type:'mgmt',desc:'管理者用"辛苦了"作为绩效反馈前的铺垫，暗示"你的努力我记住了，但结果呢？"'}],
- advice:'回复时看对象：对平级=客气回"互相的"；对领导="谢谢领导支持，接下来XX我继续推进"。如果后面跟了"但是"，提前做好被否定的心理准备。'},
-
-{phrase:'我们都是一家人',industry:0,companies:['阿里','腾讯','字节跳动','美团'],
- surface:'团队关系亲密，互相信任。',
- sub:'你要有大局观，为了集体利益可能需要你个人让步/加班/接受不合理的安排。"一家人"=你要为家付出，而家在需要的时候可能不会为你付出。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'群体认同操控',type:'imp',desc:'利用"内群体偏好"心理——人们天然对"自己人"有更强的服从意愿和牺牲精神'},{name:'道德绑架',type:'power',desc:'将个人利益与集体利益绑定，暗示不服从=不忠/不义，利用道德压力消除个人边界'},{name:'拟家族化',type:'mgmt',desc:'企业常用策略，把职场关系比喻为家庭关系，降低员工对不合理要求的心理防御'}],
- advice:'心里清楚就好，嘴上配合。面对不合理要求时："我理解团队需要，但这件事我目前资源/时间确实不够，我们看看能不能调整优先级。"用事实而不是情感来谈判。'},
-
-// ---- 保险 ----
+// === 保险 ===
 {phrase:'这个季度再冲一把',industry:1,companies:['中国平安','中国人寿','太平洋保险','泰康'],
- surface:'本季度业绩再努力提升一下。',
- sub:'你的业绩还没达标，而且差距不小。用"冲一把"包装负面信息，实际上是施压信号，暗示你接下来的工作强度和压力都会加大。',
+ surface:'本季度业绩还需要再加把劲。',
+ sub:'你的业绩不达标，领导在用激励的语气施加压力。如果不冲起来，绩效面谈时会有麻烦。',
  risk:3,riskText:'隐性施压',
- psychology:[{name:'积极性包装',type:'face',desc:'保险行业文化极度强调"正能量"，用激励性语言替代负面评价，避免打击队伍士气'},{name:'目标锚定',type:'mgmt',desc:'先设定一个高目标（锚点），你的实际努力会自动向这个高锚点靠拢，即使没有达成，结果也会比没有锚定时更高'},{name:'群体压力',type:'imp',desc:'在团队场景中说"冲一把"，利用从众效应——别人都在冲，你不动就显得不合群'}],
- advice:'先算清楚缺口有多大、还剩多少天、可用哪些资源。不要光被情绪带动，理性评估：这个目标到底可不可行？如果差距太大，提前和上级沟通调整预期，不要等到季末崩盘。'},
+ psychology:[
+   {name:'目标锚定效应',type:'mgmt',desc:'管理层先设定一个较高的目标锚点，让当前差距看起来"努努力就能追上"，实际上可能已经难以达成'},
+   {name:'群体激励伪装',type:'face',desc:'用"我们"代替"你"，把个人压力包装成集体行动，降低被施压者的抵触心理'},
+   {name:'损失厌恶',type:'imp',desc:'暗示如果不行动会失去已有的成果（奖金、职级、客户资源），利用人对损失的恐惧驱动行动'}
+ ],
+ advice:'先算清楚：当前缺口是多少？剩余多少天？按历史转化率需要多少线索？如果数学上不可行，提前和领导谈调整目标，而不是等到季末被动挨打。'},
 
-{phrase:'绩优代表要起带头作用',industry:1,companies:['中国平安','中国人寿','太平洋保险'],
- surface:'绩优人员应该以身作则。',
- sub:'你业绩好，所以你要承担更多：更多指标、带头加班、帮团队分压。"绩优"是一种荣誉，也是一种枷锁——因为你的价值被定义为"产出更多"。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'期望膨胀',type:'mgmt',desc:'一旦被贴上"绩优"标签，上级对你的期望会持续加码（类似于心理学中的"马太效应"——强者愈强，但压力也愈大）'},{name:'社会认同',type:'imp',desc:'用"带头"暗示你在群体中的地位和示范责任，利用社会认同压力让你难以拒绝'},{name:'互惠法则',type:'imp',desc:'公司给了你荣誉和资源（绩优会、表彰等），你现在需要"回报"更多的业绩'}],
- advice:'量力而行。"起带头作用"不等于"一个人扛所有"。主动提议："我可以分享一下我的方法论，帮助团队其他人提升，这样整体产出更高。"把压力从"自己多做"转化为"赋能团队"。'},
-
-{phrase:'你的客户资源还是不够活跃',industry:1,companies:['中国平安','中国人寿','泰康'],
- surface:'你手上的客户跟进频率和转化还需要加强。',
- sub:'你的业绩不好/客户经营效率低，我在用"不够活跃"委婉指出。在保险行业，"活跃度"直接挂钩续期率和交叉销售率。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'间接批评',type:'face',desc:'不直接说"你能力不行"，而是聚焦在可量化的行为指标上（活跃度），降低被批评者的情绪抵触'},{name:'归因引导',type:'def',desc:'引导你认为问题是"不够努力"而不是"客观条件限制"，从而激发你增加投入而不是抱怨环境'},{name:'绩效锚定',type:'mgmt',desc:'提前埋下绩效评估的伏笔——未来如果业绩不达标，"早就跟你说过活跃度不够"'}],
- advice:'先确认"活跃度"的具体定义和标准。然后分析：是客户本身质量的问题还是跟进方式的问题？用数据说话，不要接受模糊的指责。'},
-
-{phrase:'跨条线的资源要提前跟总监室说',industry:1,companies:['中国平安'],
- surface:'跨部门的资源协调要提前通过总监室报备。',
- sub:'这件事涉及跨部门，你不走流程就直接做，出了问题没人给你兜底。在平安，总监室是核心枢纽——不报备=不合规=风险自担。',
- risk:2,riskText:'常规客套',
- psychology:[{name:'流程权威',type:'power',desc:'平安体系内总监室拥有资源分配权，"不报备"暗示你不尊重组织权力结构'},{name:'风险转嫁',type:'def',desc:'提前告知你规则，如果出事就是"你没按规定来"，管理者的责任就消除了'},{name:'组织边界',type:'mgmt',desc:'保险大厂的组织壁垒明确，跨条线协调需要正式流程，暗示你越界了'}],
- advice:'确实要走流程。但也可以反向利用：总监室报备之后，这件事就有了正式记录，如果后续推进遇到阻力，你有报备记录作为背书。'},
-
-{phrase:'这个方案要能给到业务赋能',industry:1,companies:['中国平安','太平洋保险','泰康'],
- surface:'方案要能切实帮助一线业务人员。',
- sub:'你的方案太理论/太产品视角，落地价值存疑。在保险行业，"赋能业务"=能直接带来保费产出。如果不能——方案很难获批。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'结果导向暗示',type:'mgmt',desc:'保险行业极度结果导向，"赋能"背后的潜台词是"你能不能量化这个方案对保费/续期/客户量的贡献"'},{name:'价值证明',type:'power',desc:'要求你证明自己的价值，本质上是一种权力博弈——你只有证明有用，才能获得资源'},{name:'预期设置',type:'mgmt',desc:'提前设定评估标准（保费关联度），后续可以用这个标准否定你'}],
- advice:'重新包装方案，必须加入量化指标：预计提升XX%的转化率/覆盖XX万客户/带来XX万保费。在保险行业，没有数据的方案=没有方案。'},
-
-// ---- 实业 ----
-{phrase:'这个要按IPD流程走',industry:2,companies:['华为','比亚迪','宁德时代'],
- surface:'这件事需要按照IPD（集成产品开发）标准流程来执行。',
- sub:'你不能跳步骤、走捷径。华为的IPD流程极其严格，说这话的人要么是流程守护者，要么在用流程拖延你。流程=时间=成本，有时候流程本身就是阻力。',
- risk:3,riskText:'隐性施压',
- psychology:[{name:'制度防御',type:'def',desc:'用组织制度作为个人挡箭牌，"不是我不同意，是流程不允许"，将个人责任转移给制度'},{name:'权力制度化',type:'power',desc:'掌控流程解读权的人拥有隐性权力——他能决定你的流程走得多快、多严格'},{name:'合规安全感',type:'mgmt',desc:'在严格流程体系（如华为IPD）中，按流程走即使出问题个人责任也小，这是管理者的安全策略'}],
- advice:'先确认你当前处于IPD流程的哪个阶段，缺什么材料。然后问清楚："从当前阶段到下一个阶段，具体需要什么输入和审批？"把模糊的"按流程走"变成可操作的行动清单。'},
-
-{phrase:'述职材料用任职资格框架来写',industry:2,companies:['华为','比亚迪','宁德时代'],
- surface:'述职PPT请按照公司的任职资格体系框架来组织内容。',
- sub:'华为述职极其规范，不是你随便写一个工作总结就行的。任职资格框架包含行为标准+贡献+能力，缺一不可。不按框架写=不专业=述职过不了。',
- risk:2,riskText:'常规客套',
- psychology:[{name:'标准化期望',type:'mgmt',desc:'建立统一的评估标准，降低主观因素影响。但也暗示了"游戏规则"——你必须按规则来玩'},{name:'能力证明',type:'power',desc:'述职本质上是一次公开的能力辩护，你必须用框架内的语言证明自己达标'},{name:'组织社会化',type:'imp',desc:'强制要求使用特定框架是组织社会化的手段——让你接受组织的价值观和思维方式'}],
- advice:'拿到最新的任职资格标准文档（通常是行为标准+专业能力+关键事件），逐条对照你过去半年的工作，找到每一条标准的证据。华为述职的关键是"有证据的行为描述"，不要堆砌数据。'},
-
-{phrase:'你的思维还停留在执行层面',industry:2,companies:['华为','比亚迪','格力'],
- surface:'你目前的思考还偏重具体执行，缺乏更高维度的视角。',
- sub:'你不具备管理者的思维能力，暂时不适合晋升。在制造业大厂，"执行层"和"管理层"是严格区分的，这句话基本等于"你晋升无望"。',
+{phrase:'这个客户我来看看',industry:1,companies:['中国平安','中国人寿','太平洋保险'],
+ surface:'我需要了解一下这个客户的情况。',
+ sub:'这个客户我有想法/有资源/想给关系户，你先别跟了。保险公司里"我来看看"基本等于"客户转交"。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'层级暗示',type:'power',desc:'明确标定你在组织中的位置——执行层，暗示你和管理层之间有一道认知鸿沟'},{name:'期望错位',type:'mgmt',desc:'你觉得自己准备好了，但组织告诉你"还没准备好"。这是对晋升预期的管理'},{name:'认知权威',type:'def',desc:'"我能看出你的思维层级"——这本身就是一种权威声明，暗示评价者处于更高的认知层面'}],
- advice:'不要急于反驳或证明。先搞清楚："您认为从执行层到管理层的思维转变，具体体现在哪些方面？"然后用未来半年的实际行动去证明你的认知升级，而不是靠嘴巴说。'},
+ psychology:[
+   {name:'资源竞争',type:'power',desc:'在保险行业，客户=资源=业绩。管理层或资深同事用"看看"来重新分配资源，同时避免直接"抢"的尴尬'},
+   {name:'隐性权力',type:'power',desc:'利用职级优势，用温和的方式获取有价值的客户资源'},
+   {name:'面子交换',type:'face',desc:'给你一个"客户我来跟"的面子，暗示"你有大格局"，实际上是零和博弈'}
+ ],
+ advice:'如果客户是你的开发成果，明确主张："这个客户是我经营了X个月的，有什么我可以配合的，但建议主跟进人还是我。"如果对方强势，要求明确分工和业绩归属。'},
 
-{phrase:'这个技术路线要评审委员会拍板',industry:2,companies:['华为','比亚迪','宁德时代'],
- surface:'技术方向需要经过正式的评审流程由委员会决策。',
- sub:'我（个人）做不了这个决定/我不想替这个决定背书。把决策权交给委员会=集体决策=分摊风险。也可能是在暗示你当前方案不够成熟。',
+{phrase:'你要有大局观',industry:1,companies:['中国平安','中国人寿'],
+ surface:'你需要站在更高层面思考问题。',
+ sub:'你在计较个人利益（绩效、资源、奖金），而我在要求你牺牲个人利益服从组织目标。这句话的本质是"别争了，听安排"。',
+ risk:3,riskText:'隐性施压',
+ psychology:[
+   {name:'道德绑架',type:'mgmt',desc:'用"大局观"给你贴上一个"小气/短视"的标签，让你在争利时感到内疚，从而放弃合理诉求'},
+   {name:'组织认同操控',type:'imp',desc:'暗示你不够"忠诚"，利用人的归属需求和社会认同压力来压制个人诉求'},
+   {name:'话语权控制',type:'power',desc:'定义什么是"大局"的人拥有话语权——他说的大局=他想要的结果'}
+ ],
+ advice:'把"大局"具体化："您说的大局具体指什么目标？我在这个目标里应该承担什么角色？我的利益怎么保障？"让对方从抽象概念变成具体承诺。'},
+
+{phrase:'综合金融了解一下',industry:1,companies:['中国平安'],
+ surface:'了解一下公司其他金融产品的协同机会。',
+ sub:'领导在暗示你要做交叉销售——不只是卖保险，还要推银行理财、证券开户等。这是平安的核心考核指标之一。',
  risk:2,riskText:'常规客套',
- psychology:[{name:'集体决策保护',type:'def',desc:'个人不做决策=个人不担责。集体决策即使错了也是"大家共同的决定"'},{name:'专业壁垒',type:'power',desc:'评审委员会是技术权威的象征，暗示"你的级别还不够直接参与决策"'},{name:'程序正义',type:'mgmt',desc:'通过正式流程赋予决策合法性，减少非正式决策带来的争议'}],
- advice:'提前准备评审材料，主动找评审委员会的成员做一对一沟通（pre-selling）。评审会上的结果往往在会前就已经决定了。'},
+ psychology:[
+   {name:'目标内化',type:'mgmt',desc:'用"了解一下"这种低压力表达，逐步让你接受"综合金融"是理所当然的事，属于登门槛效应'},
+   {name:'角色拓展',type:'power',desc:'不知不觉中扩大你的职责范围，让你从"保险销售"变成"综合金融顾问"，且可能不加薪'},
+   {name:'组织社会化',type:'imp',desc:'平安文化中的"综合金融"不只是业务策略，更是一种身份认同——"我们不只是卖保险的"'}
+ ],
+ advice:'了解清楚：综合金融的交叉销售业绩怎么算？有没有额外的佣金和考核激励？如果只有义务没有激励，要谨慎投入精力。'},
 
-{phrase:'你先干着，后面不会亏待你的',industry:2,companies:['华为','比亚迪','格力'],
- surface:'先把活做好，后续会有回报。',
- sub:'这是职场中最经典的"画饼"话术之一。"后面"永远不会来。先用你的努力换产出，等你有更大价值时再谈回报——但到那时，"亏待"的定义已经被改写了。',
- risk:5,riskText:'甩锅预警',
- psychology:[{name:'延迟满足操控',type:'mgmt',desc:'利用人对"未来回报"的乐观偏差，让当前的超额投入显得合理。但承诺方没有义务兑现'},{name:'模糊承诺',type:'nc',desc:'"不会亏待"没有量化标准——多少钱？什么职级？什么时候？全都是空的'},{name:'投入陷阱',type:'def',desc:'随着你投入的时间和精力越来越多，你的退出成本也在增加，最终你会因为"沉没成本"而选择继续忍耐'},{name:'心理账户',type:'imp',desc:'让对方把当前的额外付出放入"未来回报"的心理账户，降低对当下不公的感知'}],
- advice:'立刻把模糊承诺变成具体约定："您说的不会亏待，能具体说说是哪些方面吗？是Q2的绩效评级、还是晋升推荐？我想明确一下，这样也有个努力的方向。"把"以后再说"变成"现在就定"。'},
+// === 实业 ===
+{phrase:'按流程走',industry:2,companies:['华为','比亚迪','格力','宁德时代'],
+ surface:'这件事需要按照公司规定的流程来推进。',
+ sub:'流程本身不是问题，问题是我可以用流程来控制这件事的节奏。"按流程走"在实业大厂通常意味着漫长的审批链和不确定的时间线。',
+ risk:3,riskText:'隐性施压',
+ psychology:[
+   {name:'制度性防御',type:'def',desc:'用组织制度作为挡箭牌，个人不需要承担拒绝的责任——"不是我不想，是流程不允许"'},
+   {name:'权力距离',type:'power',desc:'在华为等强流程文化中，"流程"拥有几乎最高的权威，甚至超过人的判断力'},
+   {name:'官僚防御',type:'mgmt',desc:'用流程的复杂性来增加对方的沉没成本，让主动方在等待中自行放弃'}
+ ],
+ advice:'主动确认流程细节："具体的流程节点和预计时间线是什么？每个节点的审批人是谁？有没有加速通道？"用流程的透明度来对抗流程的武器化。'},
 
-{phrase:'你的想法可以，但落地性存疑',industry:2,companies:['华为','比亚迪','宁德时代'],
- surface:'创意不错，但执行层面可能有问题。',
- sub:'你这个想法太理想化，在制造业/实业环境中根本不现实。但我不想否定你的积极性，所以只质疑"落地性"。',
+{phrase:'这个方案要过评审会',industry:2,companies:['华为','比亚迪','宁德时代'],
+ surface:'方案需要通过正式的评审流程。',
+ sub:'你一个人说了不算，这事要经过多方博弈。"评审会"在实业大厂是关键决策场景，也是甩锅和利益分配的战场。',
+ risk:3,riskText:'隐性施压',
+ psychology:[
+   {name:'决策分散',type:'mgmt',desc:'将决策权分散到多人/多部门，降低单个决策者的责任压力，同时也增加了提案的不确定性'},
+   {name:'权力博弈场',type:'power',desc:'评审会是实业大厂的核心政治场景——谁参加、谁发言、谁拍板，背后都是权力博弈'},
+   {name:'群体极化',type:'imp',desc:'群体讨论中，原本中立的参与者容易被说服极端化，使得评审结果比预想更难通过'}
+ ],
+ advice:'评审前做三件事：1.提前和关键评审人一对一沟通，争取支持；2.准备好"被攻击"的点，预判反对意见；3.准备B方案，给评审会一个"退而求其次"的选择。'},
+
+{phrase:'你这个想法很好，但是...',industry:2,companies:['华为','格力','比亚迪'],
+ surface:'先肯定你的想法，然后提出不同意见。',
+ sub:'前面都是铺垫，"但是"后面才是重点。在实业大厂，这句话通常是委婉的否定——你的想法被毙了，只是给你留了面子。',
  risk:4,riskText:'变相拒绝',
- psychology:[{name:'建设性否定',type:'nc',desc:'先肯定想法再否定执行可行性，这种"部分认同"策略比全面否定更容易被接受'},{name:'专业壁垒',type:'power',desc:'"落地性"是只有一线经验丰富的人才能判断的，暗示你缺乏实操经验'},{name:'安全反驳',type:'face',desc:'否定执行而不否定创意者本人，保全对方的面子和积极性'}],
- advice:'如果你真想推动这个想法，做一份详细的落地可行性分析：技术可行性、成本估算、风险评估、时间线。用数据和计划来回应"落地性存疑"，而不是口头争辩。'},
+ psychology:[
+   {name:'三明治反馈',type:'nc',desc:'肯定-否定-鼓励的经典结构，前半段是面子工程，中间的"但是"才是核心信息'},
+   {name:'权威否决包装',type:'power',desc:'用温和的方式行使否决权，既达到目的又不损害双方关系'},
+   {name:'面子保全',type:'face',desc:'在注重"面子文化"的中国职场，直接否定是高风险行为，"但是"是标配缓冲剂'}
+ ],
+ advice:'关注"但是"后面的内容——那才是对方的真实想法。听完后再追问："您觉得如果要推进，需要调整哪些地方？"把"否定"变成"有条件的通过"。'},
+
+{phrase:'这个需要立项',industry:2,companies:['华为','宁德时代','比亚迪'],
+ surface:'这件事需要走正式的项目立项流程。',
+ sub:'你的想法不能直接做，要先写一堆文档、找一堆人签字、等一堆审批。在实业大厂，"立项"是一个很高的门槛——可能要花几个月才能走完。',
+ risk:4,riskText:'变相拒绝',
+ psychology:[
+   {name:'门槛效应',type:'mgmt',desc:'设定一个极高的程序门槛，利用人的畏难心理让对方主动放弃。这是一种隐性否定'},
+   {name:'资源筛选',type:'power',desc:'只有"值得"的项目才会被分配资源走完立项流程，"需要立项"=你的想法还没重要到值得投入资源'},
+   {name:'时间消耗',type:'def',desc:'用流程的时间成本来拖延或消耗对方的热情，最终让事情自然消亡'}
+ ],
+ advice:'判断对方是真的要帮你立项，还是在用流程挡你。如果是后者——直接问："立项的具体条件和流程是什么？您能帮我对接立项的负责人吗？"如果对方含糊，就是挡。'},
+
+// === 通用 ===
+{phrase:'辛苦了',industry:0,companies:['字节跳动','阿里','腾讯','百度','美团','京东','拼多多'],
+ surface:'感谢你的付出和努力。',
+ sub:'最低成本的职场社交润滑剂。单独出现=客套；后面跟"但是"=要批评；频繁使用=程式化敷衍。情感含量极低。',
+ risk:1,riskText:'温和提醒',
+ psychology:[
+   {name:'社交润滑剂',type:'face',desc:'降低职场互动摩擦的礼貌用语，高频使用=低情感含量'},
+   {name:'互惠暗示',type:'imp',desc:'暗示"我看到了你的付出"，可能在为后续的请求做铺垫'},
+   {name:'情感色情化',type:'def',desc:'用最低成本的语言表达"关注"，避免被评价为冷漠，但本身不承诺任何实质回报'}
+ ],
+ advice:'简短回复即可，不必过度解读。注意后续是否有"但是"——有"但是"就是三明治反馈模式。'},
+
+{phrase:'这个事情不急',industry:0,companies:['字节跳动','阿里','腾讯','美团'],
+ surface:'这件事优先级不高，可以慢慢来。',
+ sub:'这件事根本不在我的优先级列表上。"不急"在职场中=最安全的忽视信号。',
+ risk:4,riskText:'变相拒绝',
+ psychology:[
+   {name:'优先级暗号',type:'power',desc:'用"不急"来定义你的事情不重要，同时不承担"忽视"的责任——"我没说不做，只是不急"'},
+   {name:'注意力控制',type:'mgmt',desc:'在信息过载的职场中，"不急"=你的事情不在对方的注意力范围内'},
+   {name:'拖延合法化',type:'def',desc:'给对方一个"合理"的理由不采取行动，避免直接拒绝的社交成本'}
+ ],
+ advice:'如果你真的急——明确给出时间线："这个事情其实比较紧，最晚下周三需要结果，您看怎么安排比较合适？"把"不急"变成有明确deadline的"急"。'},
+
+{phrase:'你可以试试看',industry:0,companies:['字节跳动','阿里','腾讯','百度'],
+ surface:'支持你去尝试，给你空间。',
+ sub:'我不看好，但我不想打击你。你去做吧，成了算你的，败了你自己承担。我保留了"我早说不行"的退路。',
+ risk:3,riskText:'隐性施压',
+ psychology:[
+   {name:'有限责任',type:'def',desc:'用"试试看"降低自己的参与度——成功了有"支持创新"的功劳，失败了是"他自己要试的"'},
+   {name:'期望对冲',type:'mgmt',desc:'通过"试试"而不是"做"，设定了一个较低的期望值。成功=惊喜，失败=意料之中'},
+   {name:'创新免责',type:'power',desc:'在互联网大厂，"鼓励创新"是政治正确，但不能直接否定。"试试看"是完美的免责话术'}
+ ],
+ advice:'识别后追问资源承诺："好的，那我试试看。在这个过程中如果需要XX资源支持，您这边能帮忙协调吗？"把"试试看"变成有资源承诺的正式尝试。'}
 ];
 
-// ===== PSYCHOLOGY TYPE CLASSES =====
-const psychTypes = {
-  imp:{label:'社会心理学',cls:'psych-imp'},
-  def:{label:'防御机制',cls:'psych-def'},
-  mgmt:{label:'管理心理学',cls:'psych-mgmt'},
-  face:{label:'印象管理',cls:'psych-face'},
-  power:{label:'权力心理',cls:'psych-power'},
-  nc:{label:'非暴力沟通',cls:'psych-nc'}
-};
-
-const riskClasses = {1:'risk-1',2:'risk-2',3:'risk-3',4:'risk-4',5:'risk-5',6:'risk-6'};
-const riskIcons = {'1':'\ud83d\udfe2','2':'\ud83d\udfe1','3':'\ud83d\udfe0','4':'\ud83d\udd34','5':'\ud83d\udfe3','6':'\u26d4'};
-
-// ===== AI INFERENCE ENGINE =====
+// ===== AI INFERENCE =====
 function aiInfer(phrase, industry) {
-  const lower = phrase.toLowerCase();
-  let sub='', risk=2, riskText='常规客套', psych=[], advice='';
-  
-  // Fuzzy match attempts first
-  let partial = null;
-  for(const item of db) {
-    if(item.industry !== industry && item.industry !== -1) continue;
-    const ratio = similarity(lower, item.phrase.toLowerCase());
-    if(ratio > 0.6) { partial = item; break; }
-  }
-  if(partial) return partial;
-  
-  // Keyword-based inference with psychology
-  if(/同意|批准|流程|走.*审批|报备|你领导/.test(lower)) {
-    sub='说话人在使用程序性语言作为拒绝策略，暗示"这件事需要满足额外条件才能推进"。常见于不想直接说"不"的场景。';
-    risk=4; riskText='变相拒绝';
-    psych=[{name:'责任转移',type:'def',desc:'用流程/审批作为挡箭牌，避免个人承担拒绝的社交成本'},{name:'边界设置',type:'mgmt',desc:'划定决策权限边界，暗示"这不在我的授权范围内"'}];
-    advice='追问具体条件："需要满足什么条件才能推进？我这边提前准备好。"迫使对方从模糊变具体。';
-  } else if(/优化|调整|打磨|完善|再想想|修改|改改/.test(lower)) {
-    sub='说话人不满意当前结果，但不愿给出具体反馈方向。用模糊的改进要求让执行者自己猜，同时保留自己的评价权。';
-    risk=3; riskText='隐性施压';
-    psych=[{name:'评价回避',type:'def',desc:'管理者回避给出具体反馈，用模糊指令转移定义问题的责任'},{name:'权力展示',type:'power',desc:'通过保留"要求更多"的权力来建立层级优势'}];
-    advice='直接问："您觉得具体哪个维度需要优化？我列几个方向您圈一下。"不要猜，把定义问题的责任推回去。';
-  } else if(/研究|看看|考虑|评估|商量|讨论/.test(lower)) {
-    sub='说话人在使用拖延策略，不直接给出答复。在职场中，"再看看"大概率等于"不做"或"否定"。';
-    risk=4; riskText='变相拒绝';
-    psych=[{name:'决策拖延',type:'nc',desc:'不决策本身就是一种决策。利用对方的乐观偏差降低追问频率'},{name:'面子保护',type:'face',desc:'给双方留台阶——对方面子上"还在考虑"，你的面子上"没被直接拒绝"'}];
-    advice='设定明确deadline："好的，那下周三之前给个方向性结论，我这边同步其他依赖方。"';
-  } else if(/辛苦|感谢|不错|可以|挺好的/.test(lower) && lower.length < 20) {
-    sub='标准的职场客套用语，情感含量较低。频率越高越可能是程式化表达，不代表真实的认可。';
-    risk=2; riskText='常规客套';
-    psych=[{name:'社交润滑剂',type:'face',desc:'降低职场互动摩擦的礼貌用语，高频使用=低情感含量'},{name:'互惠暗示',type:'imp',desc:'暗示"我看到了你的付出"，可能在为后续的请求做铺垫'}];
-    advice='简短回复即可，不必过度解读。注意后续是否有"但是"——有"但是"就是三明治反馈模式。';
-  } else if(/忙|排期|资源|人力|时间不够/.test(lower)) {
-    sub='用资源限制作为挡箭牌。"忙"在职场中是最安全的拒绝理由，几乎不会被追问。';
-    risk=3; riskText='隐性施压';
-    psych=[{name:'身份信号',type:'power',desc:'"忙"=我的时间有价值，暗示你的请求优先级不够'},{name:'社会交换',type:'imp',desc:'暗示你的请求回报率不够高，不值得我投入资源'}];
-    advice='降低对方的决策成本："我准备了一个简版方案，您花5分钟过一眼给个方向就行。"';
-  } else if(/老板|领导|上面|高层|公司.*要求/.test(lower)) {
-    sub='说话人在借用权威人物或组织来增强自己立场的正当性，同时规避个人责任。可能是真有上级意见，也可能是虚构的挡箭牌。',
-    risk=3; riskText='隐性施压';
-    psych=[{name:'权威借用',type:'power',desc:'利用权威人物增强说服力，同时转移否定责任'},{name:'服从暗示',type:'imp',desc:'暗示你应该服从更高层级，利用权力距离心理压制追问'}];
-    advice:'如果可以验证——直接找权威方确认。如果不能——追问具体内容："领导具体怎么说的？我了解一下。"';
-  } else {
-    sub='这句话看似简单，但结合具体语境和说话人的身份/语气/场景，可能隐藏着更深层的意图。建议结合上下文综合判断。';
-    risk=2; riskText='常规客套';
-    psych=[{name:'语境依赖',type:'imp',desc:'职场话术的含义高度依赖语境（说话人身份、场景、语气、时机），脱离语境的翻译准确度有限'},{name:'模糊表达',type:'nc',desc:'职场中大量使用模糊语言，这种模糊性本身是一种策略——给双方都留了解读空间'}];
-    advice='建议补充上下文信息后重新翻译，包括：谁说的（职级）、什么场合（会议/私聊/邮件）、前后文是什么。';
-  }
-  
-  return {phrase,industry,companies:[],surface:phrase,sub,risk,riskText,psychology:psych,advice};
-}
+  var lower = phrase.toLowerCase();
+  var sub = '';
+  var risk = 2;
+  var riskText = '常规客套';
+  var psych = [];
 
-function similarity(a, b) {
-  if(a===b) return 1;
-  let maxLen = Math.max(a.length, b.length);
-  if(maxLen===0) return 1;
-  let matches = 0;
-  const shorter = a.length < b.length ? a : b;
-  const longer = a.length < b.length ? b : a;
-  for(let i=0;i<shorter.length;i++) { if(longer.includes(shorter[i])) matches++; }
-  return matches / maxLen;
+  if(/领导|老板|上面|高层|审批/.test(lower)) {
+    sub = '说话人在借用权威或程序来增强自己立场的正当性，同时规避个人责任。可能是真有上级意见，也可能是虚构的挡箭牌。';
+    risk = 3; riskText = '隐性施压';
+    psych = [
+      {name:'权威借用',type:'power',desc:'利用权威人物增强说服力，同时转移否定责任'},
+      {name:'服从暗示',type:'imp',desc:'暗示你应该服从更高层级，利用权力距离心理压制追问'}
+    ];
+  } else if(/优化|调整|改改|修改|完善/.test(lower)) {
+    sub = '说话人不满意当前结果，但不愿给出具体反馈方向。用模糊的改进要求让执行者自己猜，同时保留自己的评价权。';
+    risk = 3; riskText = '隐性施压';
+    psych = [
+      {name:'评价回避',type:'def',desc:'管理者回避给出具体反馈，用模糊指令转移定义问题的责任'},
+      {name:'权力展示',type:'power',desc:'通过保留"要求更多"的权力来建立层级优势'}
+    ];
+  } else if(/研究|看看|考虑|评估|商量|讨论/.test(lower)) {
+    sub = '说话人在使用拖延策略，不直接给出答复。在职场中，"再看看"大概率等于"不做"或"否定"。';
+    risk = 4; riskText = '变相拒绝';
+    psych = [
+      {name:'决策拖延',type:'nc',desc:'不决策本身就是一种决策。利用对方的乐观偏差降低追问频率'},
+      {name:'面子保护',type:'face',desc:'给双方留台阶——对方面子上"还在考虑"，你的面子上"没被直接拒绝"'}
+    ];
+  } else if(/辛苦|感谢|不错|可以|挺好的/.test(lower) && lower.length < 20) {
+    sub = '标准的职场客套用语，情感含量较低。频率越高越可能是程式化表达，不代表真实的认可。';
+    risk = 2; riskText = '常规客套';
+    psych = [
+      {name:'社交润滑剂',type:'face',desc:'降低职场互动摩擦的礼貌用语，高频使用=低情感含量'},
+      {name:'互惠暗示',type:'imp',desc:'暗示"我看到了你的付出"，可能在为后续的请求做铺垫'}
+    ];
+  } else if(/忙|排期|资源|人力|时间不够/.test(lower)) {
+    sub = '用资源限制作为挡箭牌。"忙"在职场中是最安全的拒绝理由，几乎不会被追问。';
+    risk = 3; riskText = '隐性施压';
+    psych = [
+      {name:'身份信号',type:'power',desc:'"忙"=我的时间有价值，暗示你的请求优先级不够'},
+      {name:'社会交换',type:'imp',desc:'暗示你的请求回报率不够高，不值得我投入资源'}
+    ];
+  } else if(/但是|不过|然而/.test(lower)) {
+    sub = '在职场沟通中，"但是"之前的内容通常是为了降低拒绝冲击的铺垫，"但是"之后才是说话人的真实意图。';
+    risk = 3; riskText = '隐性施压';
+    psych = [
+      {name:'三明治反馈',type:'nc',desc:'经典沟通结构：先肯定再否定。前面的夸是缓冲剂，后面的才是核心'},
+      {name:'认知对比',type:'face',desc:'先给正面信息，再用转折制造对比，让负面信息冲击力更强（也可以反过来使用）'}
+    ];
+  } else {
+    sub = '这句话看似简单，但结合具体语境和说话人的身份、语气、场景，可能隐藏着更深层的意图。建议结合上下文综合判断。';
+    risk = 2; riskText = '常规客套';
+    psych = [
+      {name:'语境依赖',type:'imp',desc:'职场话术的含义高度依赖语境（说话人身份、场景、语气、时机），脱离语境的翻译准确度有限'},
+      {name:'模糊表达',type:'nc',desc:'职场中大量使用模糊语言，这种模糊性本身是一种策略——给双方都留了解读空间'}
+    ];
+  }
+
+  var advice = '建议补充上下文信息后重新翻译，包括：谁说的（职级）、什么场合（会议/私聊/邮件）、前后文是什么。';
+  if (risk >= 4) {
+    advice = '这句话有较高的潜台词风险。建议直接追问具体条件和时间节点，把模糊表达变成明确答复。';
+  }
+
+  return {phrase:phrase, industry:industry, companies:[], surface:phrase, sub:sub, risk:risk, riskText:riskText, psychology:psych, advice:advice};
 }
 
 // ===== UI FUNCTIONS =====
 function updateClock() {
-  const now = new Date();
-  document.getElementById('statusTime').textContent = 
-    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  var now = new Date();
+  var h = now.getHours().toString();
+  var m = now.getMinutes().toString();
+  if (h.length < 2) h = '0' + h;
+  if (m.length < 2) m = '0' + m;
+  document.getElementById('statusTime').textContent = h + ':' + m;
 }
-setInterval(updateClock, 30000); updateClock();
+setInterval(updateClock, 30000);
+updateClock();
 
-function switchTab(idx, el) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('sec'+idx).classList.add('active');
-  if(idx===2) renderHistory();
+// Tab switching
+function switchTab(idx) {
+  var tabs = document.querySelectorAll('.tab');
+  var secs = document.querySelectorAll('.section');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.remove('active');
+    secs[i].classList.remove('active');
+  }
+  tabs[idx].classList.add('active');
+  document.getElementById('sec' + idx).classList.add('active');
+  if (idx === 2) renderHistory();
 }
 
-function selectIndustry(idx, el) {
+function selectIndustry(idx) {
   currentIndustry = idx;
-  document.querySelectorAll('.industry-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
+  var btns = document.querySelectorAll('.industry-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  btns[idx].classList.add('active');
   renderCompanies();
   renderQuickPhrases();
 }
 
 function renderCompanies() {
-  const cont = document.getElementById('companyChips');
-  cont.innerHTML = companies[currentIndustry].map((c,i) => 
-    `<div class="chip${i===0?' active':''}" onclick="selectCompany(this,'${c}')">${c}</div>`
-  ).join('');
-  currentCompany = companies[currentIndustry][0];
-}
+  var cont = document.getElementById('companyChips');
+  var list = companies[currentIndustry];
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    html += '<div class="chip' + (i === 0 ? ' active' : '') + '" data-company="' + list[i] + '">' + list[i] + '</div>';
+  }
+  cont.innerHTML = html;
+  currentCompany = list[0];
 
-function selectCompany(el, name) {
-  document.querySelectorAll('#companyChips .chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  currentCompany = name;
+  cont.onclick = function(e) {
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    var chips = cont.querySelectorAll('.chip');
+    for (var j = 0; j < chips.length; j++) chips[j].classList.remove('active');
+    chip.classList.add('active');
+    currentCompany = chip.getAttribute('data-company');
+  };
 }
 
 function renderQuickPhrases() {
-  const phrases = db.filter(d=>d.industry===currentIndustry).slice(0,8);
-  document.getElementById('quickPhrases').innerHTML = phrases.map(p=> 
-    `<div class="quick-tag" onclick="quickFill('${p.phrase.replace(/'/g,"\\'")}')">${p.phrase}</div>`
-  ).join('');
+  var phrases = [];
+  for (var i = 0; i < db.length; i++) {
+    if (db[i].industry === currentIndustry && phrases.length < 8) phrases.push(db[i]);
+  }
+  var html = '';
+  for (var j = 0; j < phrases.length; j++) {
+    html += '<div class="quick-tag" data-phrase="' + escapeAttr(phrases[j].phrase) + '">' + escapeHtml(phrases[j].phrase) + '</div>';
+  }
+  var cont = document.getElementById('quickPhrases');
+  cont.innerHTML = html;
+
+  cont.onclick = function(e) {
+    var tag = e.target.closest('.quick-tag');
+    if (!tag) return;
+    document.getElementById('inputField').value = tag.getAttribute('data-phrase');
+    updateCount();
+    translate();
+  };
 }
 
-function quickFill(text) {
-  document.getElementById('inputField').value = text;
-  updateCount();
-  translate();
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escapeAttr(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function updateCount() {
@@ -518,113 +586,159 @@ function updateCount() {
 }
 
 function translate() {
-  const phrase = document.getElementById('inputField').value.trim();
-  if(!phrase) { showToast('请输入话术内容'); return; }
-  
-  // Search DB
-  let result = db.find(d => d.industry===currentIndustry && d.phrase===phrase);
-  if(!result) result = db.find(d => d.industry!==currentIndustry && d.phrase===phrase);
-  if(!result) result = aiInfer(phrase, currentIndustry);
-  
+  var phrase = document.getElementById('inputField').value.trim();
+  if (!phrase) { showToast('请输入话术内容'); return; }
+
+  var result = null;
+  for (var i = 0; i < db.length; i++) {
+    if (db[i].industry === currentIndustry && db[i].phrase === phrase) { result = db[i]; break; }
+  }
+  if (!result) {
+    for (var j = 0; j < db.length; j++) {
+      if (db[j].phrase === phrase) { result = db[j]; break; }
+    }
+  }
+  if (!result) result = aiInfer(phrase, currentIndustry);
+
   renderResult(result);
-  
-  // Add to history
-  history.unshift({phrase, company:currentCompany, sub:result.sub, risk:result.risk, riskText:result.riskText, time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})});
-  if(history.length>20) history.pop();
+
+  historyList.unshift({
+    phrase: phrase,
+    company: currentCompany,
+    sub: result.sub,
+    risk: result.risk,
+    riskText: result.riskText,
+    time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})
+  });
+  if (historyList.length > 20) historyList.pop();
 }
 
 function renderResult(r) {
-  const riskNum = r.risk;
-  const area = document.getElementById('resultArea');
-  area.innerHTML = `
-    <div class="result-card">
-      <div class="result-header">
-        <span class="title">翻译结果</span>
-        <span class="risk-badge ${riskClasses[riskNum]}">${riskIcons[riskNum]} ${r.riskText}</span>
-      </div>
-      <div class="result-body">
-        <div class="result-row">
-          <div class="result-label">📋 表面意思</div>
-          <div class="result-value">${r.surface}</div>
-        </div>
-        <div class="result-row">
-          <div class="result-label">🎯 真实潜台词</div>
-          <div class="result-value"><span class="highlight">${r.sub}</span></div>
-        </div>
-        <div class="result-row">
-          <div class="result-label">🧠 心理学解码</div>
-          <div style="margin-top:6px">
-            ${r.psychology.map(p=>`
-              <span class="psych-tag ${psychTypes[p.type].cls}">${psychTypes[p.type].label}</span>
-              <div style="margin-bottom:8px;font-size:13px;line-height:1.7">
-                <strong style="color:var(--text)">${p.name}：</strong><span style="color:#666">${p.desc}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-        <div class="advice-box">
-          <div class="title">💡 应对建议</div>
-          <div class="text">${r.advice}</div>
-        </div>
-      </div>
-    </div>`;
+  var area = document.getElementById('resultArea');
+  var rl = riskLevels[r.risk];
+  var psychHtml = '';
+  for (var i = 0; i < r.psychology.length; i++) {
+    var p = r.psychology[i];
+    var pt = psychTypes[p.type] || psychTypes.imp;
+    psychHtml += '<span class="psych-tag ' + pt.cls + '">' + pt.label + '</span>';
+    psychHtml += '<div style="margin-bottom:8px;font-size:13px;line-height:1.7">';
+    psychHtml += '<strong style="color:var(--text)">' + p.name + '：</strong>';
+    psychHtml += '<span style="color:#666">' + p.desc + '</span></div>';
+  }
+
+  area.innerHTML = '<div class="result-card">'
+    + '<div class="result-header">'
+    + '<span class="title">翻译结果</span>'
+    + '<span class="risk-badge ' + rl.cls + '">' + rl.icon + ' ' + r.riskText + '</span>'
+    + '</div>'
+    + '<div class="result-body">'
+    + '<div class="result-row"><div class="result-label">[ ] 表面意思</div><div class="result-value">' + escapeHtml(r.surface) + '</div></div>'
+    + '<div class="result-row"><div class="result-label">[ ] 真实潜台词</div><div class="result-value"><span class="highlight">' + escapeHtml(r.sub) + '</span></div></div>'
+    + '<div class="result-row"><div class="result-label">[ ] 心理学解码</div><div style="margin-top:6px">' + psychHtml + '</div></div>'
+    + '<div class="advice-box"><div class="title">[ ] 应对建议</div><div class="text">' + escapeHtml(r.advice) + '</div></div>'
+    + '</div></div>';
+
   document.getElementById('shareBar').style.display = 'block';
-  area.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(function(){ area.scrollIntoView({behavior:'smooth',block:'start'}); }, 100);
 }
 
 function renderLibrary() {
-  const list = document.getElementById('libraryList');
-  list.innerHTML = db.map(d => {
-    const indNames = ['互联网','保险','实业'];
-    return `<div class="lib-item" onclick="useLibItem('${d.phrase.replace(/'/g,"\\'")}',${d.industry})">
-      <div class="lib-phrase">"${d.phrase}"</div>
-      <div class="lib-meta">
-        <span class="lib-company">${d.companies[0]||''}</span>
-        <span class="lib-company">${indNames[d.industry]}</span>
-        <span class="lib-sub">→ ${d.sub.slice(0,25)}...</span>
-      </div>
-    </div>`;
-  }).join('');
-}
+  var list = document.getElementById('libraryList');
+  var indNames = ['互联网','保险','实业'];
+  var html = '';
+  for (var i = 0; i < db.length; i++) {
+    var d = db[i];
+    var subPreview = d.sub.length > 25 ? d.sub.slice(0,25) + '...' : d.sub;
+    html += '<div class="lib-item" data-phrase="' + escapeAttr(d.phrase) + '" data-industry="' + d.industry + '">'
+      + '<div class="lib-phrase">"' + escapeHtml(d.phrase) + '"</div>'
+      + '<div class="lib-meta">'
+      + '<span class="lib-company">' + escapeHtml(d.companies[0]||'') + '</span>'
+      + '<span class="lib-company">' + indNames[d.industry] + '</span>'
+      + '<span class="lib-sub">- ' + escapeHtml(subPreview) + '</span>'
+      + '</div></div>';
+  }
+  list.innerHTML = html;
 
-function useLibItem(phrase, industry) {
-  switchTab(0, document.querySelector('.tab'));
-  selectIndustry(industry, document.querySelectorAll('.industry-btn')[industry]);
-  setTimeout(()=>{
-    document.getElementById('inputField').value = phrase;
-    updateCount();
-    translate();
-  }, 100);
+  list.onclick = function(e) {
+    var item = e.target.closest('.lib-item');
+    if (!item) return;
+    var phrase = item.getAttribute('data-phrase');
+    var industry = parseInt(item.getAttribute('data-industry'));
+    switchTab(0);
+    selectIndustry(industry);
+    setTimeout(function(){
+      document.getElementById('inputField').value = phrase;
+      updateCount();
+      translate();
+    }, 50);
+  };
 }
 
 function renderHistory() {
-  const list = document.getElementById('historyList');
-  if(history.length===0) { list.innerHTML='<div class="history-empty">暂无翻译记录<br>去翻译一条试试吧 🎭</div>'; return; }
-  list.innerHTML = history.map(h=>`
-    <div class="history-item">
-      <div class="history-phrase">"${h.phrase}"</div>
-      <div class="history-sub">${h.company} · ${riskIcons[h.risk]} ${h.riskText} · ${h.time}</div>
-    </div>
-  `).join('');
+  var list = document.getElementById('historyList');
+  if (historyList.length === 0) {
+    list.innerHTML = '<div class="history-empty">暂无翻译记录<br>去翻译一条试试吧</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < historyList.length; i++) {
+    var h = historyList[i];
+    var rl = riskLevels[h.risk];
+    html += '<div class="history-item">'
+      + '<div class="history-phrase">"' + escapeHtml(h.phrase) + '"</div>'
+      + '<div class="history-sub">' + escapeHtml(h.company) + ' | ' + rl.icon + ' ' + h.riskText + ' | ' + h.time + '</div>'
+      + '</div>';
+  }
+  list.innerHTML = html;
 }
 
 function shareResult() {
-  const text = `🎭 大厂潜台词翻译器\n\n输入：${document.getElementById('inputField').value}\n\n快去体验 👉 同事分享链接`;
-  if(navigator.clipboard) { navigator.clipboard.writeText(text); showToast('链接已复制，发给同事吧'); }
-  else showToast('请截图分享给同事');
+  var text = '大厂潜台词翻译器\n输入：' + document.getElementById('inputField').value + '\n快去体验';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    showToast('链接已复制，发给同事吧');
+  } else {
+    showToast('请截图分享给同事');
+  }
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2000);
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
 }
 
-// Init
-renderCompanies();
-renderQuickPhrases();
-renderLibrary();
-renderHistory();
+// ===== EVENT BINDING =====
+document.addEventListener('DOMContentLoaded', function() {
+  // Tabs
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) {
+    (function(idx){
+      tabs[idx].addEventListener('click', function(){ switchTab(idx); });
+    })(i);
+  }
+
+  // Industry buttons
+  var indBtns = document.querySelectorAll('.industry-btn');
+  for (var j = 0; j < indBtns.length; j++) {
+    (function(idx){
+      indBtns[idx].addEventListener('click', function(){ selectIndustry(idx); });
+    })(j);
+  }
+
+  // Translate button
+  document.getElementById('translateBtn').addEventListener('click', translate);
+
+  // Share button
+  document.getElementById('shareBtn').addEventListener('click', shareResult);
+
+  // Init
+  renderCompanies();
+  renderQuickPhrases();
+  renderLibrary();
+  renderHistory();
+});
 </script>
 </body>
 </html>
